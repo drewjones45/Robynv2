@@ -42,8 +42,15 @@ create_files <- TRUE
 #### Step 1: Load data
 
 ## Check simulated dataset or load your own dataset
+##sample data
 data("dt_simulated_weekly")
 head(dt_simulated_weekly)
+##actual test data
+robyn_weeklysample_v4_rdata <- read.csv("C:/Users/andrew/Documents/GitHub/Robynv2/R/data/robyn_weeklysample_v4.csv")
+save(robyn_weeklysample_v4_rdata, file="C:/Users/andrew/Documents/GitHub/Robynv2/R/data/robyn_weeklysample_v4_rdata.RData")
+data("robyn_weeklysample_v4_rdata")
+head(robyn_weeklysample_v4_rdata)
+
 
 ## Check holidays from Prophet
 # 59 countries included. If your country is not included, please manually add it.
@@ -52,7 +59,7 @@ data("dt_prophet_holidays")
 head(dt_prophet_holidays)
 
 # Directory where you want to export results to (will create new folders)
-robyn_directory <- "~/Desktop"
+robyn_directory <- "~/GitHub/Robynv2/output"
 
 ################################################################
 #### Step 2a: For first time user: Model specification in 4 steps
@@ -63,22 +70,22 @@ robyn_directory <- "~/Desktop"
 ## variables and "default" for all others. User can still customise signs if necessary.
 ## Documentation is available, access it anytime by running: ?robyn_inputs
 InputCollect <- robyn_inputs(
-  dt_input = dt_simulated_weekly,
+  dt_input = robyn_weeklysample_v4_rdata,
   dt_holidays = dt_prophet_holidays,
   date_var = "DATE", # date format must be "2020-01-01"
   dep_var = "revenue", # there should be only one dependent variable
   dep_var_type = "revenue", # "revenue" (ROI) or "conversion" (CPA)
   prophet_vars = c("trend", "season", "holiday"), # "trend","season", "weekday" & "holiday"
-  prophet_country = "DE", # input country code. Check: dt_prophet_holidays
-  context_vars = c("competitor_sales_B", "events"), # e.g. competitors, discount, unemployment etc
-  paid_media_spends = c("tv_S", "ooh_S", "print_S", "facebook_S", "search_S"), # mandatory input
-  paid_media_vars = c("tv_S", "ooh_S", "print_S", "facebook_I", "search_clicks_P"), # mandatory.
+  prophet_country = "US", # input country code. Check: dt_prophet_holidays
+  context_vars = c("print_launch", "product_launch", "solidcolor_launch", "mb_status", "sale_status"), # e.g. competitors, discount, unemployment etc
+  paid_media_spends = c("facebook_cost", "google_ads_cost", "bing_ads_cost", "tiktok_cost", "influencer_cost", "tiktok_influencer_cost", "tatari_cost", "mntn_cost", "dm_cost", "sms_cost", "cj_cost", "fig_cost", "linkby_cost"), # mandatory input
+  paid_media_vars = c("facebook_cost", "google_ads_cost", "bing_ads_cost", "tiktok_cost", "influencer_cost", "tiktok_influencer_cost", "tatari_cost", "mntn_cost", "dm_cost", "sms_cost", "cj_cost", "fig_cost", "linkby_cost"), # mandatory.
   # paid_media_vars must have same order as paid_media_spends. Use media exposure metrics like
   # impressions, GRP etc. If not applicable, use spend instead.
-  organic_vars = "newsletter", # marketing activity without media spend
+  organic_vars = c("sms_sends", "email_campaign_delivery", "email_flow_delivery", "organic_impressions"), # marketing activity without media spend
   # factor_vars = c("events"), # force variables in context_vars or organic_vars to be categorical
-  window_start = "2016-01-01",
-  window_end = "2018-12-31",
+  window_start = "2021-01-03",
+  window_end = "2023-05-21",
   adstock = "geometric" # geometric, weibull_cdf or weibull_pdf.
 )
 print(InputCollect)
@@ -100,8 +107,8 @@ hyper_names(adstock = InputCollect$adstock, all_media = InputCollect$all_media)
 
 ## 1. IMPORTANT: set plot = TRUE to create example plots for adstock & saturation
 ## hyperparameters and their influence in curve transformation.
-plot_adstock(plot = FALSE)
-plot_saturation(plot = FALSE)
+plot_adstock(plot = TRUE)
+plot_saturation(plot = TRUE)
 
 ## 2. Get correct hyperparameter names:
 # All variables in paid_media_spends and organic_vars require hyperparameter and will be
@@ -167,24 +174,57 @@ hyper_limits()
 
 # Example hyperparameters ranges for Geometric adstock
 hyperparameters <- list(
-  facebook_S_alphas = c(0.5, 3),
-  facebook_S_gammas = c(0.3, 1),
-  facebook_S_thetas = c(0, 0.3),
-  print_S_alphas = c(0.5, 3),
-  print_S_gammas = c(0.3, 1),
-  print_S_thetas = c(0.1, 0.4),
-  tv_S_alphas = c(0.5, 3),
-  tv_S_gammas = c(0.3, 1),
-  tv_S_thetas = c(0.3, 0.8),
-  search_S_alphas = c(0.5, 3),
-  search_S_gammas = c(0.3, 1),
-  search_S_thetas = c(0, 0.3),
-  ooh_S_alphas = c(0.5, 3),
-  ooh_S_gammas = c(0.3, 1),
-  ooh_S_thetas = c(0.1, 0.4),
-  newsletter_alphas = c(0.5, 3),
-  newsletter_gammas = c(0.3, 1),
-  newsletter_thetas = c(0.1, 0.4),
+  dm_cost_alphas = c(0.5, 3),
+  dm_cost_gammas = c(0.3, 1),
+  dm_cost_thetas = c(0.1, 0.4),
+  tatari_cost_alphas = c(0.5, 3),
+  tatari_cost_gammas = c(0.3, 1),
+  tatari_cost_thetas = c(0.3, 0.8),
+  mntn_cost_alphas = c(0.5, 3),
+  mntn_cost_gammas = c(0.3, 1),
+  mntn_cost_thetas = c(0.3, 0.8),
+  facebook_cost_alphas = c(0.5, 3),
+  facebook_cost_gammas = c(0.3, 1),
+  facebook_cost_thetas = c(0, 0.3),
+  google_ads_cost_alphas = c(0.5, 3),
+  google_ads_cost_gammas = c(0.3, 1),
+  google_ads_cost_thetas = c(0, 0.3),
+  bing_ads_cost_alphas = c(0.5, 3),
+  bing_ads_cost_gammas = c(0.3, 1),
+  bing_ads_cost_thetas = c(0, 0.3),
+  tiktok_cost_alphas = c(0.5, 3),
+  tiktok_cost_gammas = c(0.3, 1),
+  tiktok_cost_thetas = c(0, 0.3),
+  influencer_cost_alphas = c(0.5, 3),
+  influencer_cost_gammas = c(0.3, 1),
+  influencer_cost_thetas = c(0, 0.3),
+  tiktok_influencer_cost_alphas = c(0.5, 3),
+  tiktok_influencer_cost_gammas = c(0.3, 1),
+  tiktok_influencer_cost_thetas = c(0, 0.3),
+  sms_cost_alphas = c(0.5, 3),
+  sms_cost_gammas = c(0.3, 1),
+  sms_cost_thetas = c(0, 0.3),
+  cj_cost_alphas = c(0.5, 3),
+  cj_cost_gammas = c(0.3, 1),
+  cj_cost_thetas = c(0, 0.3),
+  fig_cost_alphas = c(0.5, 3),
+  fig_cost_gammas = c(0.3, 1),
+  fig_cost_thetas = c(0, 0.3),
+  linkby_cost_alphas = c(0.5, 3),
+  linkby_cost_gammas = c(0.3, 1),
+  linkby_cost_thetas = c(0, 0.3),
+  sms_sends_alphas = c(0.5, 3),
+  sms_sends_gammas = c(0.3, 1),
+  sms_sends_thetas = c(0, 0.3),
+  email_campaign_delivery_alphas = c(0.5, 3),
+  email_campaign_delivery_gammas = c(0.3, 1),
+  email_campaign_delivery_thetas = c(0, 0.3),
+  email_flow_delivery_alphas = c(0.5, 3),
+  email_flow_delivery_gammas = c(0.3, 1),
+  email_flow_delivery_thetas = c(0, 0.3),
+  organic_impressions_alphas = c(0.5, 3),
+  organic_impressions_gammas = c(0.3, 1),
+  organic_impressions_thetas = c(0, 0.3),
   train_size = c(0.5, 0.8)
 )
 
@@ -341,7 +381,7 @@ print(OutputCollect)
 
 ## Compare all model one-pagers and select one that mostly reflects your business reality
 print(OutputCollect)
-select_model <- "1_122_7" # Pick one of the models from OutputCollect to proceed
+select_model <- "5_94_2" # Pick one of the models from OutputCollect to proceed
 
 #### Version >=3.7.1: JSON export and import (faster and lighter than RDS files)
 ExportedModel <- robyn_write(InputCollect, OutputCollect, select_model, export = create_files)
@@ -378,7 +418,7 @@ AllocatorCollect1 <- robyn_allocator(
   # date_range = NULL, # Default last month as initial period
   # total_budget = NULL, # When NULL, default is total spend in date_range
   channel_constr_low = 0.7,
-  channel_constr_up = c(1.2, 1.5, 1.5, 1.5, 1.5),
+  channel_constr_up = 1.5,
   # channel_constr_multiplier = 3,
   scenario = "max_response",
   export = create_files
