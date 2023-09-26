@@ -64,28 +64,32 @@ robyn_directory <- "~/GitHub/Robynv2/output"
 ################################################################
 #### Step 2a: For first time user: Model specification in 4 steps
 
-#### 2a-1: First, specify input variables
+### Checking for Duplicates
+##head(robyn_dailysample_v5_rdata)
+##robyn_dailysample_v5_rdata[duplicated(robyn_dailysample_v5_rdata$DATE)]
+##robyn_dailysample_v5_rdata[!duplicated(robyn_dailysample_v5_rdata$DATE), ]
 
+#### 2a-1: First, specify input variables
 ## All sign control are now automatically provided: "positive" for media & organic
 ## variables and "default" for all others. User can still customise signs if necessary.
 ## Documentation is available, access it anytime by running: ?robyn_inputs
 InputCollect <- robyn_inputs(
   dt_input = robyn_dailysample_v5_rdata,
   dt_holidays = dt_prophet_holidays,
-  date_var = "DATE", # date format must be "2020-01-01"
+  date_var = "day_date", # date format must be "2020-01-01"
   dep_var = "revenue", # there should be only one dependent variable
   dep_var_type = "revenue", # "revenue" (ROI) or "conversion" (CPA)
-  prophet_vars = c("trend", "season", "holiday"), # "trend","season", "weekday" & "holiday"
+  prophet_vars = c("trend", "season", "weekday", "holiday"), # "trend","season", "weekday" & "holiday"
   prophet_country = "US", # input country code. Check: dt_prophet_holidays
   context_vars = c("print_launch", "product_launch", "solidcolor_launch", "mb_status", "sale_status"), # e.g. competitors, discount, unemployment etc
-  paid_media_spends = c("facebook_cost", "google_ads_cost", "bing_ads_cost", "tiktok_cost", "influencer_cost", "Other Cost"), # mandatory input
-  paid_media_vars = c("facebook_cost", "google_ads_cost", "bing_ads_cost", "tiktok_cost", "influencer_cost", "Other Cost"), # mandatory.
+  paid_media_spends = c("facebook_cost", "google_ads_cost", "bing_ads_cost", "tiktok_cost", "influencer_cost", "other_cost"), # mandatory input
+  paid_media_vars = c("facebook_cost", "google_ads_cost", "bing_ads_cost", "tiktok_cost", "influencer_cost", "other_cost"), # mandatory.
   # paid_media_vars must have same order as paid_media_spends. Use media exposure metrics like
   # impressions, GRP etc. If not applicable, use spend instead.
-  organic_vars = c("Email_SMS Campaign", "organic_impressions"), # marketing activity without media spend
+  organic_vars = c("email_sms_campaign", "organic_impressions"), # marketing activity without media spend
   # factor_vars = c("events"), # force variables in context_vars or organic_vars to be categorical
   window_start = "2021-01-01",
-  window_end = "2023-05-21",
+  window_end = "2023-05-31",
   adstock = "geometric" # geometric, weibull_cdf or weibull_pdf.
 )
 print(InputCollect)
@@ -174,15 +178,9 @@ hyper_limits()
 
 # Example hyperparameters ranges for Geometric adstock
 hyperparameters <- list(
-  dm_cost_alphas = c(0.5, 3),
-  dm_cost_gammas = c(0.3, 1),
-  dm_cost_thetas = c(0.1, 0.4),
-  tatari_cost_alphas = c(0.5, 3),
-  tatari_cost_gammas = c(0.3, 1),
-  tatari_cost_thetas = c(0.3, 0.8),
-  mntn_cost_alphas = c(0.5, 3),
-  mntn_cost_gammas = c(0.3, 1),
-  mntn_cost_thetas = c(0.3, 0.8),
+  other_cost_alphas = c(0.5, 3),
+  other_cost_gammas = c(0.3, 1),
+  other_cost_thetas = c(0.3, 0.8),
   facebook_cost_alphas = c(0.5, 3),
   facebook_cost_gammas = c(0.3, 1),
   facebook_cost_thetas = c(0, 0.3),
@@ -198,30 +196,9 @@ hyperparameters <- list(
   influencer_cost_alphas = c(0.5, 3),
   influencer_cost_gammas = c(0.3, 1),
   influencer_cost_thetas = c(0, 0.3),
-  tiktok_influencer_cost_alphas = c(0.5, 3),
-  tiktok_influencer_cost_gammas = c(0.3, 1),
-  tiktok_influencer_cost_thetas = c(0, 0.3),
-  sms_cost_alphas = c(0.5, 3),
-  sms_cost_gammas = c(0.3, 1),
-  sms_cost_thetas = c(0, 0.3),
-  cj_cost_alphas = c(0.5, 3),
-  cj_cost_gammas = c(0.3, 1),
-  cj_cost_thetas = c(0, 0.3),
-  fig_cost_alphas = c(0.5, 3),
-  fig_cost_gammas = c(0.3, 1),
-  fig_cost_thetas = c(0, 0.3),
-  linkby_cost_alphas = c(0.5, 3),
-  linkby_cost_gammas = c(0.3, 1),
-  linkby_cost_thetas = c(0, 0.3),
-  sms_sends_alphas = c(0.5, 3),
-  sms_sends_gammas = c(0.3, 1),
-  sms_sends_thetas = c(0, 0.3),
-  email_campaign_delivery_alphas = c(0.5, 3),
-  email_campaign_delivery_gammas = c(0.3, 1),
-  email_campaign_delivery_thetas = c(0, 0.3),
-  email_flow_delivery_alphas = c(0.5, 3),
-  email_flow_delivery_gammas = c(0.3, 1),
-  email_flow_delivery_thetas = c(0, 0.3),
+  email_sms_campaign_alphas = c(0.5, 3),
+  email_sms_campaign_gammas = c(0.3, 1),
+  email_sms_campaign_thetas = c(0, 0.3),
   organic_impressions_alphas = c(0.5, 3),
   organic_impressions_gammas = c(0.3, 1),
   organic_impressions_thetas = c(0, 0.3),
