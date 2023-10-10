@@ -88,7 +88,7 @@ InputCollect <- robyn_inputs(
   # impressions, GRP etc. If not applicable, use spend instead.
   organic_vars = c("email_sms_campaign", "organic_impressions"), # marketing activity without media spend
   # factor_vars = c("events"), # force variables in context_vars or organic_vars to be categorical
-  window_start = "2021-01-01",
+  window_start = "2022-01-01",
   window_end = "2023-05-31",
   adstock = "geometric" # geometric, weibull_cdf or weibull_pdf.
 )
