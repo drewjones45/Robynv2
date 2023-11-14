@@ -572,7 +572,7 @@ Response1 <- robyn_response(
   InputCollect = InputCollect,
   OutputCollect = OutputCollect,
   select_model = select_model,
-  metric_name = "facebook_S",
+  metric_name = "fb_awareness",
   metric_value = Spend1, # total budget for date_range
   date_range = "last_1" # last two periods
 )
@@ -583,7 +583,7 @@ Response2 <- robyn_response(
   InputCollect = InputCollect,
   OutputCollect = OutputCollect,
   select_model = select_model,
-  metric_name = "facebook_S",
+  metric_name = "fb_awareness",
   metric_value = Spend2,
   date_range = "last_1"
 )
