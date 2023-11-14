@@ -4,7 +4,7 @@
 
 ## Install, load, and check (latest) Robyn version, using one of these 2 sources:
 ## A) Install the latest stable version from CRAN:
-install.packages("Robyn")
+#install.packages("Robyn")
 ## B) Install the latest dev version from GitHub:
 #install.packages("remotes") # Install remotes first if you haven't already
 #remotes::install_github("facebookexperimental/Robyn/R")
@@ -34,9 +34,9 @@ create_files <- TRUE
 data("dt_simulated_weekly")
 head(dt_simulated_weekly)
 ##actual test data
-robyn_weeklysample_v4_rdata <- read.csv("C:/Users/andrew/Documents/GitHub/Robynv2/R/data/robyn_weeklysample_v5-Daily.csv")
-save(robyn_weeklysample_v4_rdata, file="C:/Users/andrew/Documents/GitHub/Robynv2/R/data/robyn_weeklysample_v5_rdata.RData")
-data("robyn_weeklysample_v5_rdata")
+robyn_weeklysample_v5_rdata <- read.csv("/Users/andrewjones/Documents/GitHub/Robynv2/data/Robyn_dataset_v5-Daily.csv")
+save(robyn_weeklysample_v5_rdata, file="/Users/andrewjones/Documents/GitHub/Robynv2/data/Robyn_dataset_v5_rdata.RData")
+data("robyn_dataset_v5_rdata")
 head(robyn_weeklysample_v5_rdata)
 
 
