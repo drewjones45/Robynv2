@@ -46,10 +46,10 @@ create_files <- TRUE
 data("dt_simulated_weekly")
 head(dt_simulated_weekly)
 ##actual test data
-robyn_dailysample_v6_rdata <- read.csv("/Users/andrewjones/Documents/GitHub/Robynv2/R/data/Robyn_dataset_daily_v6.csv")
-save(robyn_dailysample_v6_rdata, file="/Users/andrewjones/Documents/GitHub/Robynv2/R/data/robyn_dailysample_v6_rdata.RData")
-data("robyn_dailysample_v6_rdata")
-head(robyn_dailysample_v6_rdata)
+robyn_dailysample_v7_rdata <- read.csv("/Users/andrewjones/Documents/GitHub/Robynv2/R/data/Robyn_dataset_daily_v7.csv")
+save(robyn_dailysample_v7_rdata, file="/Users/andrewjones/Documents/GitHub/Robynv2/R/data/robyn_dailysample_v7_rdata.RData")
+data("robyn_dailysample_v7_rdata")
+head(robyn_dailysample_v7_rdata)
 
 
 ## Check holidays from Prophet
@@ -74,14 +74,14 @@ robyn_directory <- "~/GitHub/Robynv2/output"
 ## variables and "default" for all others. User can still customise signs if necessary.
 ## Documentation is available, access it anytime by running: ?robyn_inputs
 InputCollect <- robyn_inputs(
-  dt_input = robyn_dailysample_v6_rdata,
+  dt_input = robyn_dailysample_v7_rdata,
   dt_holidays = dt_prophet_holidays,
   date_var = "day_date", # date format must be "2020-01-01"
   dep_var = "revenue", # there should be only one dependent variable
   dep_var_type = "revenue", # "revenue" (ROI) or "conversion" (CPA)
   prophet_vars = c("trend", "season", "weekday", "holiday"), # "trend","season", "weekday" & "holiday"
   prophet_country = "US", # input country code. Check: dt_prophet_holidays
-  context_vars = c("mb_status"), # e.g. competitors, discount, unemployment etc
+  context_vars = c("mb_status", "sale_status","solidcolor_launch","print_launch","product_launch"), # e.g. competitors, discount, unemployment etc
   paid_media_spends = c("fb_adv", "fb_awareness", "fb_consideration", "fb_intent", "fb_loyalty", "ga_brand", "ga_other", "ga_nonbrand", "ga_shoppmax", "tiktok_cost", "influencer_cost","other_cost"), # mandatory input
   paid_media_vars = c("fb_adv", "fb_awareness", "fb_consideration", "fb_intent", "fb_loyalty", "ga_brand", "ga_other", "ga_nonbrand", "ga_shoppmax", "tiktok_cost", "influencer_cost","other_cost"), # mandatory.
   # paid_media_vars must have same order as paid_media_spends. Use media exposure metrics like
